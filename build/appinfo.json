@@ -1,0 +1,40 @@
+{
+    "targetPlatforms": [
+        "chalk"
+    ], 
+    "projectType": "rocky", 
+    "messageKeys": {
+        "ControlKeyResetRequest": 1, 
+        "ControlKeyUnsupportedError": 4, 
+        "ControlKeyChunk": 3, 
+        "ControlKeyResetComplete": 2
+    }, 
+    "companyName": "\u4f50\u4f2f\u697d", 
+    "enableMultiJS": true, 
+    "watchapp": {
+        "watchface": true
+    }, 
+    "versionLabel": "1.0", 
+    "longName": "Planet", 
+    "shortName": "Planet", 
+    "name": "planet", 
+    "sdkVersion": "3", 
+    "displayName": "Planet", 
+    "uuid": "65c73074-e714-4912-b5dd-6ff1f70323ab", 
+    "appKeys": {
+        "ControlKeyResetRequest": 1, 
+        "ControlKeyUnsupportedError": 4, 
+        "ControlKeyChunk": 3, 
+        "ControlKeyResetComplete": 2
+    }, 
+    "capabilities": [
+        "configurable"
+    ], 
+    "main": {
+        "rockyjs": "src/rocky/index.js", 
+        "pkjs": "src/pkjs/index.js"
+    }, 
+    "resources": {
+        "media": []
+    }
+}

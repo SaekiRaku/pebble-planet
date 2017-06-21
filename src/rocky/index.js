@@ -1,0 +1,120 @@
+var rocky = require('rocky');
+
+var init = false,
+    stageWidth,
+    stageHeight,
+    centerx,
+    centery,
+    ctx
+    // 上下文缓存
+
+var timecolor = "mediumspringgreen";
+var linecolor = "white";
+var backgroundcolor = "black";
+
+function Polar2Point(length, deg) {
+    // 极坐标转换
+    deg = Math.PI / 180 * deg;
+    return {
+        x: length * Math.cos(deg),
+        y: length * Math.sin(deg)
+    }
+}
+
+function Angle2Radian(angle) {
+    return Math.PI / 180 * angle;
+}
+
+function fixtime(num) {
+    if (num < 10) {
+        return "0" + num;
+    } else {
+        return num;
+    }
+}
+
+function cssColor(color) {
+    if (typeof color === 'number') {
+        color = color.toString(16);
+    } else if (!color) {
+        return 'transparent';
+    }
+
+    color = padColorString(color);
+
+    return '#' + color;
+}
+
+function padColorString(color) {
+    color = color.toLowerCase();
+
+    while (color.length < 6) {
+        color = '0' + color;
+    }
+
+    return color;
+}
+
+rocky.on('draw', function(event) {
+    if (!init) {
+        ctx = event.context;
+        // 缓存Canvas上下文
+        stageWidth = ctx.canvas.clientWidth;
+        stageHeight = ctx.canvas.clientHeight;
+        centerx = stageWidth / 2;
+        centery = stageHeight / 2;
+        // 缓存舞台信息
+        init = true;
+        // 初始化完成
+    }
+
+    ctx.clearRect(0, 0, stageWidth, stageHeight);
+    // 重绘舞台
+    ctx.fillStyle = backgroundcolor;
+    ctx.fillRect(0, 0, stageWidth, stageHeight);
+
+    var d = new Date();
+
+    var hour = d.getHours();
+    var minute = d.getMinutes();
+
+    ctx.fillStyle = timecolor;
+    ctx.textAlign = "center";
+    ctx.font = "36px bold numbers Leco-numbers";
+
+    var length = stageWidth / 2 - 60;
+    var angle = hour * 30 - 90;
+    var height = ctx.measureText(hour).height;
+    var p = Polar2Point(length, angle);
+    ctx.fillText(hour, centerx + p.x, centery + p.y - height / 2 - 5);
+    ctx.strokeStyle = linecolor;
+    ctx.beginPath();
+    ctx.arc(centerx, centery, length, Angle2Radian(angle + 40), Angle2Radian(angle - 40));
+    ctx.stroke();
+
+    ctx.font = "20px bold Leco-numbers";
+
+    length = stageWidth / 2 - 20;
+    angle = minute * 6 - 90;
+    height = ctx.measureText(minute).height
+    p = Polar2Point(length, angle);
+    ctx.fillText(minute, centerx + p.x, centery + p.y - height / 2 - 5);
+    ctx.beginPath();
+    ctx.arc(centerx, centery, length, Angle2Radian(angle + 15), Angle2Radian(angle - 15));
+    ctx.stroke();
+
+});
+
+rocky.on("minutechange", function() {
+    rocky.requestDraw();
+});
+
+rocky.on('message', function(event) {
+    var settings = event.data;
+    timecolor = cssColor(settings.timecolor);
+    linecolor = cssColor(settings.linecolor);
+    backgroundcolor = cssColor(settings.backgroundcolor);
+    rocky.requestDraw();
+});
+
+rocky.postMessage({ command: 'settings' });
